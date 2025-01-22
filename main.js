@@ -22,55 +22,50 @@ Game.registerMod("Perfect Bot", {
         
     },
 	logic: function(num_of_buildings, clicks_per_sec){
-		let building_to_buy = this.buying_handler(num_of_buildings, clicks_per_sec);
-		if(building_to_buy.canBuy()) building_to_buy.buy();
+		let item_to_buy = this.buying_handler(num_of_buildings, clicks_per_sec);
+		if(item_to_buy.getPrice() <= Game.cookies) item_to_buy.buy();
 	},
 	buying_handler: function(num_of_buildings, clicks_per_sec){
 		/* value = (building-CPS)/ (cost * time-to-afford) | building-CPS is per not total*/
 		/* function that calculates the value (to handle buildings and upgrades) */
-		function calculate_value(item_cps, item_price){
-			return item_cps / ((item_price ** 2) / (Game.cookiesPs + (Game.computedMouseCps * clicks_per_sec))) 
+		function calculate_value(item_cps, item_price, idle_cps, mouse_cps){
+			return item_cps / ((item_price ** 2) / (idle_cps + (mouse_cps * clicks_per_sec))) 
 		}
 
 		let curr_value = 0;
-
 		/* calculate values per building */
-		let best_building = null;
+		let best_purchase = null;
 		for(let i = 0; i < num_of_buildings; i ++){
-			let temp_value = calculate_value(this.buildings_arr[i].storedCps, this.buildings_arr[i].price ** 2);
-			console.log("value is ", temp_value);
+			let temp_value = calculate_value(this.buildings_arr[i].storedCps, this.buildings_arr[i].getPrice(), Game.cookiesPs, Game.computedMouseCps);
 			if(curr_value < temp_value){
 				curr_value = temp_value;
-				best_building =  this.buildings_arr[i];
+				best_purchase =  this.buildings_arr[i];
 			}
 		}
 
 
-
 		/* calculate values per upgrades (there are a lot of upgrades and different effects they have) */
 		let curr_upgrades = Game.UpgradesInStore;
-		let best_upgrade = null;
 		for(let i = 0; i < curr_upgrades.length; i ++){
-		
+			let original_mouse_cps = Game.computedMouseCps;
+			let original_idle_cps = Game.cookiesPs;
+			curr_upgrades[i].bought = 1; /* Kind of buys it, but doesn't remove from the store or give achievements */
+			Game.CalculateGains(); /* recalculate the CPS otherwise it will take a while */
+			let additional_mouse_cps = Game.computedMouseCps - original_mouse_cps;
+			let additional_idle_cps = Game.cookiesPs - original_idle_cps;
+			let temp_value = calculate_value(additional_idle_cps + (additional_mouse_cps * clicks_per_sec), curr_upgrades[i].getPrice(), original_idle_cps, original_mouse_cps);
+			console.log(additional_mouse_cps);
+			curr_upgrades[i].bought = 0;
+			Game.CalculateGains();
 
-
-
-
-
-
-
-
-
-
+			if(curr_value < temp_value){
+				curr_value = temp_value;
+				best_purchase = curr_upgrades[i];
+			}
 		}
-
-
-
-
-
-
-
-		return best_building;
+		
+		console.log("Best option is ", best_purchase.name);
+		return best_purchase;
 	},
 	autoclicker: function(){
 		Game.ClickCookie();
@@ -101,6 +96,11 @@ Game.registerMod("Perfect Bot", {
 		this.buildings_arr[18] = Game.Objects['Cortex baker'];
 		this.buildings_arr[19] = Game.Objects['You'];
 
-		Object.freeze(this.buildings_arr); /* Freeze the array so it is immutable */
+
+
+
+
+		/* Freeze the array so it is immutable */
+		Object.freeze(this.buildings_arr); 
 	}
 });
