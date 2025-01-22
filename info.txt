@@ -6,10 +6,5 @@
  "ModVersion": 2.8,
  "GameVersion": 2.052,
  "Date": "28/01/2022",
- "Dependencies": [
-  "CCSE"
- ],
- "Disabled": 1,
- "AllowSteamAchievs": 1,
- "Workshop": "3075787967"
+ "AllowSteamAchievs": 1
 }
