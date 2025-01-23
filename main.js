@@ -2,6 +2,7 @@ Game.registerMod("Perfect Bot", {
     init: function() {
 		const CLICKS_PER_SECOND = 10;
         const AUTOCLICKER_INTERVAL = 1000 / CLICKS_PER_SECOND;
+		const DELTA_CLICKS_PER_SEC = 2;
 		const LOGIC_UPDATES_PER_SEC = 4;
 		const LOGIC_UPDATE_INTERVAL = 1000 / LOGIC_UPDATES_PER_SEC;
 		const NUM_OF_BUILDINGS = 20;
@@ -12,7 +13,7 @@ Game.registerMod("Perfect Bot", {
 
 		this.auxiliary_init();
 		
-		this.intervalId = setInterval(this.autoclicker, AUTOCLICKER_INTERVAL);
+		this.intervalId = setInterval(this.autoclicker, AUTOCLICKER_INTERVAL + (Math.random() * 2 - 1) * DELTA_CLICKS_PER_SEC); /* not robotic clicking */
 		
 		setInterval(() => {
 			this.logic(NUM_OF_BUILDINGS, CLICKS_PER_SECOND);
@@ -23,7 +24,7 @@ Game.registerMod("Perfect Bot", {
 		/* auto buying */
 		let item_to_buy = this.buying_handler(num_of_buildings, clicks_per_sec);
 		if(item_to_buy.getPrice() <= Game.cookies) item_to_buy.buy(); /* buy the best valued item once we can afford it */
-		this.golden_cookie_clicker();
+		if(this.logic_achievements.get("fading luck")) this.golden_cookie_clicker();
 
 		/* achievements */
 		this.achievement_handler();
@@ -31,11 +32,17 @@ Game.registerMod("Perfect Bot", {
 
 	},
 	achievement_handler: function(){
+		this.update_achievement_status();
+
+
+
+		/* START OF HANDLING FREE ACHIEVEMENTS */
 		function get_tabloid_addiction(){
 			for(let i = 0; i < 50; i ++){
 				document.querySelector("#commentsText1").click();
 			}
 		}
+
 		function get_god_complex(){
 			Game.bakeryNameSet("orteil");
 			Game.bakeryNameSet("perfect bot");
@@ -43,7 +50,8 @@ Game.registerMod("Perfect Bot", {
 
 		function get_olden_days(){
 			document.querySelector("#logButton").click();
-			document.querySelector("#oldenDays > div").click();
+			let small_cookie = document.querySelector("#oldenDays > div");
+			if(small_cookie) small_cookie.click();
 			document.querySelector("#logButton").click();
 		}
 
@@ -52,20 +60,103 @@ Game.registerMod("Perfect Bot", {
 			Game.ConfirmPrompt();
 		}
 
-		async function get_free_achievements(){
-			await Promise.all([get_tabloid_addiction(), get_god_complex(), get_olden_days(), get_whats_in_a_name()]);
-
+		function get_here_you_go_and_tiny_cookie(){
+			document.querySelector("#statsButton").click();
+			let error_button = document.querySelector("#statsAchievs > div.listing.crateBox > div:nth-child(542)");
+			let tiny_cookie = document.querySelector("#statsGeneral > div:nth-child(1) > div > div");
+			if(tiny_cookie) tiny_cookie.click();
+			if(error_button) error_button.click();
+			document.querySelector("#statsButton").click();
 		}
+
+		function get_stifling_the_press(){
+			let previous_width = window.innerWidth;
+			window.innerWidth = 200;
+			Game.resize();
+			document.querySelector("#commentsText1").click();
+			window.innerWidth = previous_width;
+			Game.resize();
+		}
+
+		async function get_cookie_dunker(){
+			// height 50, width 200
+			if(Game.milkProgress < 0.4) return;
+
+			if (this.cookieDunkerInProgress) return;  
+			this.cookieDunkerInProgress = true;
+
+			let original_window_height = window.innerHeight;
+			let original_window_width = window.innerWidth;
+			window.innerWidth = window.innerWidth / 2;
+			window.dispatchEvent(new Event('resize'));
+			for(let i = 3; i >= 0; i ++){
+				window.innerHeight = window.innerHeight / 2;
+				window.dispatchEvent(new Event('resize'));
+				await new Promise(resolve => setTimeout(resolve, 5000));
+				if(Game.Achievements['Cookie-dunker'].won) break;
+			}
+			window.innerHeight = original_window_height;
+			window.innerWidth = original_window_width;
+			window.dispatchEvent(new Event('resize'));
+			this.cookieDunkerInProgress = false;
+		}
+
+		const get_free_achievements = () =>{
+			/* timeoutes are so you don't get 6 achievements at once even though they are really easy */
+			/* if statements double check with the one around get_free_achievements incase of errors */
+
+			/*								logs to debug
+			console.log("=====================================================");
+			console.log("tabloid addiction: ", this.logic_achievements.get('tabloid addiction'));
+			console.log("change name ", this.logic_achievements.get("change name"));
+			console.log("god complex ", this.logic_achievements.get("god complex"));
+			console.log("olden days ", this.logic_achievements.get("olden days"));
+			console.log("tiny cookie ", this.logic_achievements.get("tiny cookie"));
+			console.log("error ", this.logic_achievements.get("error"));
+			console.log("small news ", this.logic_achievements.get("small news"));
+			console.log("cookie dunker ", this.logic_achievements.get("cookie dunker"));
+			console.log("=====================================================");
+			*/
+
+			if(!this.logic_achievements.get("tabloid addiction")) get_tabloid_addiction(); 
+			if(!this.logic_achievements.get("change name")) setTimeout(() => {get_whats_in_a_name();}, 5000);
+			if(!this.logic_achievements.get('god complex')) setTimeout(() => {get_god_complex();}, 20000);
+			if(!this.logic_achievements.get("olden days")) setTimeout(() => {get_olden_days();}, 4000);
+			if(!this.logic_achievements.get("error") || !this.logic_achievements.get("tiny cookie")) setTimeout(() => {get_here_you_go_and_tiny_cookie();}, 10000);
+			if(!this.logic_achievements.get("small news")) setTimeout(() => {get_stifling_the_press();}, 20000);
+			if(!this.logic_achievements.get("cookie dunker")) get_cookie_dunker();
+		}
+
 		const has_free_achievements = () =>{
-			return this.logic_achievements.get('tabloid addiction') && this.logic_achievements.get('god complex') 
-			&& this.logic_achievements.get("olden days") && this.logic_achievements.get("change name");
+			return this.logic_achievements.get('tabloid addiction') && this.logic_achievements.get("change name") && this.logic_achievements.get('god complex')
+				&& this.logic_achievements.get("olden days") && this.logic_achievements.get("error") && this.logic_achievements.get("tiny cookie")
+				&& this.logic_achievements.get("small news") && this.logic_achievements.get("cookie dunker");
 		}
 
-		
-		if(!has_free_achievements()){
+		if(!has_free_achievements()) {
+			console.log("get free achievements");
 			get_free_achievements();
-			
 		}
+		
+
+		/* END OF HANDLING FREE ACHIEVEMENTS */
+
+		const get_just_wrong = () =>{
+			/* index 1 is the grandma object (they're in order) */
+			if(!this.logic_achievements.get("just wrong") && this.buildings_arr[1].amount > 0) this.buildings_arr[1].sell(1); 
+		}
+
+		const get_fading_luck = () =>{
+			if(this.logic_achievements.get("fading luck")) return;
+			if(Game.shimmers[0]){
+				if(Game.shimmers[0].life <= 2){
+					Game.shimmers[0].pop();
+				}
+			}
+		}
+
+		get_fading_luck();
+		get_just_wrong();
 
 		
 
@@ -124,15 +215,24 @@ Game.registerMod("Perfect Bot", {
 
 	},
 	update_achievement_status: function(){
+		/* free beginning achievements */
 		this.logic_achievements.set("tabloid addiction", Game.Achievements['Tabloid addiction'].won);
 		this.logic_achievements.set("god complex", Game.Achievements['God complex'].won);
 		this.logic_achievements.set("olden days", Game.Achievements['Olden days'].won);
 		this.logic_achievements.set("change name", Game.Achievements['What\'s in a name'].won);
+		this.logic_achievements.set("error", Game.Achievements['Here you go'].won);
+		this.logic_achievements.set("tiny cookie", Game.Achievements['Tiny cookie'].won);
+		this.logic_achievements.set("cookie dunker", Game.Achievements['Cookie-dunker'].won);
+		this.logic_achievements.set("small news", Game.Achievements['Stifling the press'].won);
 
+		/* easy achievements */
 
-
-		this.logic_achievements.set("true neverclick", Game.Achievements['True Neverclick'].won);
+		this.logic_achievements.set("just wrong", Game.Achievements['Just wrong'].won);
 		this.logic_achievements.set("fading luck", Game.Achievements['Fading luck'].won);
+
+		/* harder achievements */
+		this.logic_achievements.set("true neverclick", Game.Achievements['True Neverclick'].won);
+
 		this.logic_achievements.set("polymath", Game.Achievements['Polymath'].won);
 		this.logic_achievements.set("ren baker", Game.Achievements['Renaissance baker'].won);
 		this.logic_achievements.set("mathematician", Game.Achievements['Mathematician'].won);
