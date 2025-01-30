@@ -9,7 +9,6 @@ Game.registerMod("Perfect Bot", {
 		const NUM_OF_ASCENSIONS = 20;
 		this.buildings_arr = new Array(NUM_OF_BUILDINGS); /* There are 20 buildings */
 		this.logic_achievements = new Map(); /* Achievements that require alterting the logic to obtain */
-		this.heavenly_upgrades = new Map(); /* contains all the heavenly upgrade ID's */
 		this.ascension_milestones = new Array(NUM_OF_ASCENSIONS);
 		this.curr_num_of_ascensions = 0;
 		
@@ -275,16 +274,13 @@ Game.registerMod("Perfect Bot", {
 		}
 
 		const unlock_heavenly_upgrades = () => {
-		//	console.log("Game.heavenlyChips ", Game.heavenlyChipsDisplayed);
 			for(let i = 0; i < heavenly_upgrades_to_buy.length; i ++){
 				Game.Upgrades[heavenly_upgrades_to_buy[i]].buy();
 			}
-		//	console.log("chips after ", Game.heavenlyChips);
 		}
 
 		const ascension_functions = [
 			() => {
-				if(!Game.OnAscend) return;
 				heavenly_upgrades_to_buy = ['Legacy', 'Heavenly cookies', 'How to bake your dragon', 
 				'Heavenly luck', 'Permanent upgrade slot I', 'Heralds', 
 				'Box of brand biscuits', 'Tin of british tea biscuits', 'Box of macarons'];
@@ -292,17 +288,60 @@ Game.registerMod("Perfect Bot", {
 
 			},
 			() => {
-				if(!Game.OnAscend) return;
 				heavenly_upgrades_to_buy = ['Season switcher', 'Golden switch', 'Tin of butter cookies', 'Starter kit'];
 				console.log("ascension 2");
 
 			},
 			() => {
-				if(!Game.OnAscend) return;
 				heavenly_upgrades_to_buy = ['Persistent memory', 'Halo gloves', 'Lasting fortune', 'Decisive fate', 
 				'Lucky digit', 'Starter kitchen'];
 				console.log("ascension 3");
 				
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Residual luck', 'Permanent upgrade slot II'];
+				console.log("ascension 4");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Divine sales', 'Divine discount','Divine bakeries', 
+					'Twin Gates of Transcendence', 'Angels', 'Archangels', 'Virtues', 'Dominions', 'Kitten angels', 
+					'Belphegor', 'Mammon', 'Abaddon', 'Satan', 'Synergies Vol. I'];
+				console.log("ascension 5");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Asmodeus', 'Cherubim', 'Beelzebub', 'Seraphim', 'Synergies Vol. II'];
+				console.log("ascension 6");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Inspired checklist', 'Genius accounting', 'Label printer', 
+					'Unshackled flavor', 'Unshackled cursors'];
+				console.log("ascension 7");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Starlove', 'Starsnow', 'Starspawn', 'Startrade', 'Starterror', 
+					'Unholy bait', 'Sacrilegious corruption', 'Elder spice', 'Wrinkly cookies',
+					'Permanent upgrade slot III', 'Five-finger discount', 'Distilled essence of redoubled luck',
+					'Heavenly luck', 'Classic dairy selection', 'Fanciful dairy selection', 'Basic wallpaper assortment',
+					'Distinguished wallpaper assortment', 'Golden cookie alert sound', 'Lucifer', 'God', 'Chimera'];
+				console.log("ascension 8");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Stevia Caelestis', 'Sugar baking', 'Sugar crystal cookies', 
+					'Permanent upgrade slot IV'];
+				console.log("ascension 9");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Unshackled grandmas', 'Unshackled berrylium', 'Sugar craving', 
+					'Diabetica Daemonicus', 'Sugar aging process', 'Aura gloves', 'Lucky payout'];
+				console.log("ascension 10");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Cat ladies', 'Kitten wages', 'Shimmering veil', 'Reinforced membrane', 'Keepsakes'];
+				console.log("ascension 11");
+			},
+			() => {
+				heavenly_upgrades_to_buy = ['Fortune cookies', 'Permanent upgrade slot V', 'Pet the dragon'];
+				console.log("ascension 12");
 			}
 		];
 
@@ -469,161 +508,6 @@ Game.registerMod("Perfect Bot", {
 		this.ascension_milestones[10] = 42584548438 - this.ascension_milestones[9];
 
 		Object.freeze(this.ascension_milestones);
-
-
-		/* 						HEAVENLY UPGRADES 					*/
-		/* angel & demon */
-		this.heavenly_upgrades.set('twin gates', 281);
-		this.heavenly_upgrades.set('angels', 274);
-		this.heavenly_upgrades.set('archangels', 275);
-		this.heavenly_upgrades.set('virtues', 276);
-		this.heavenly_upgrades.set('dominions', 277);
-		this.heavenly_upgrades.set('cherubim', 278);
-		this.heavenly_upgrades.set('kitten angels', 291);
-		this.heavenly_upgrades.set('kitten wages', 646);
-		this.heavenly_upgrades.set('cat ladies', 717);
-		this.heavenly_upgrades.set('lactose intolerance', 718);
-		this.heavenly_upgrades.set('seraphim', 279);
-		this.heavenly_upgrades.set('god', 280);
-		this.heavenly_upgrades.set('belphegor', 353);
-		this.heavenly_upgrades.set('mammon', 354);
-		this.heavenly_upgrades.set('abaddon', 355);
-		this.heavenly_upgrades.set('satan', 356);
-		this.heavenly_upgrades.set('asmodeus', 357);
-		this.heavenly_upgrades.set('beelzebub', 358);
-		this.heavenly_upgrades.set('lucifer', 359);
-		this.heavenly_upgrades.set('synergies 1', 393);
-		this.heavenly_upgrades.set('synergies 2', 394);
-		this.heavenly_upgrades.set('chimera', 325);
-
-		/* persistent */
-		this.heavenly_upgrades.set('persistent memory', 141);
-		this.heavenly_upgrades.set('perm upgrade 1', 264);
-		this.heavenly_upgrades.set('perm upgrade 2', 265);
-		this.heavenly_upgrades.set('perm upgrade 3', 266);
-		this.heavenly_upgrades.set('perm upgrade 4', 267);
-		this.heavenly_upgrades.set('perm upgrade 5', 268);
-		this.heavenly_upgrades.set('checklist', 496);
-		this.heavenly_upgrades.set('accounting', 561);
-		this.heavenly_upgrades.set('printer', 505); /* artic monkeys */
-
-		/* unshackled flavor */
-		this.heavenly_upgrades.set('flavor', 787);
-		this.heavenly_upgrades.set('berrylium', 788);
-		this.heavenly_upgrades.set('blueberrylium', 789);
-		this.heavenly_upgrades.set('chalcedhoney', 790);
-		this.heavenly_upgrades.set('buttergold', 791);
-		this.heavenly_upgrades.set('sugarmuck', 792);
-		this.heavenly_upgrades.set('jetmint', 793);
-		this.heavenly_upgrades.set('cherrysilver', 794);
-		this.heavenly_upgrades.set('hazelrald', 795);
-		this.heavenly_upgrades.set('mooncandy', 796);
-		this.heavenly_upgrades.set('astrofudge', 797);
-		this.heavenly_upgrades.set('alabascream', 798);
-		this.heavenly_upgrades.set('iridyum', 799);
-		this.heavenly_upgrades.set('glucosmium', 800);
-		this.heavenly_upgrades.set('glimmeringue', 863);
-
-		/* unshackled building */
-		this.heavenly_upgrades.set('cursors', 768);
-		this.heavenly_upgrades.set('grandmas', 769);
-		this.heavenly_upgrades.set('farms', 770);
-		this.heavenly_upgrades.set('mines', 771);
-		this.heavenly_upgrades.set('factories', 772);
-		this.heavenly_upgrades.set('banks', 773);
-		this.heavenly_upgrades.set('temples', 774);
-		this.heavenly_upgrades.set('wizards', 775);
-		this.heavenly_upgrades.set('shipments', 776);
-		this.heavenly_upgrades.set('alchemy', 777);
-		this.heavenly_upgrades.set('portals', 778);
-		this.heavenly_upgrades.set('time machiens', 779);
-		this.heavenly_upgrades.set('antimatter', 780);
-		this.heavenly_upgrades.set('prisms', 781);
-		this.heavenly_upgrades.set('chancemakers', 782);
-		this.heavenly_upgrades.set('factal engines', 783);
-		this.heavenly_upgrades.set('javascript', 784);
-		this.heavenly_upgrades.set('idleverses', 785);
-		this.heavenly_upgrades.set('cortex bakers', 786);
-		this.heavenly_upgrades.set('you', 864);
-
-		/* golden cookie */
-		this.heavenly_upgrades.set('heavenly luck', 282);
-		this.heavenly_upgrades.set('lasting fortune', 283);
-		this.heavenly_upgrades.set('golden switch', 327);
-		this.heavenly_upgrades.set('lucky digit', 411);
-		this.heavenly_upgrades.set('lucky number', 412);
-		this.heavenly_upgrades.set('lucky payout', 413);
-		this.heavenly_upgrades.set('residual luck', 365);
-		this.heavenly_upgrades.set('decisive fate', 284);
-		this.heavenly_upgrades.set('alert sound', 360);
-		this.heavenly_upgrades.set('redoubled luck', 397);
-
-		/* discount and luck */
-		this.heavenly_upgrades.set('discount', 285);
-		this.heavenly_upgrades.set('sales', 286);
-		this.heavenly_upgrades.set('bakeries', 287);
-		this.heavenly_upgrades.set('veil', 562);
-		this.heavenly_upgrades.set('beginners luck', 591);
-		this.heavenly_upgrades.set('membrane', 592);
-		this.heavenly_upgrades.set('touch', 801);
-		this.heavenly_upgrades.set('murmur', 802);
-		this.heavenly_upgrades.set('edge', 803);
-		this.heavenly_upgrades.set('fortune cookies', 643);
-
-		/* season */
-		this.heavenly_upgrades.set('season switcher', 181);
-		this.heavenly_upgrades.set('starspawn', 269);
-		this.heavenly_upgrades.set('starsnow', 270);
-		this.heavenly_upgrades.set('starterror', 271);
-		this.heavenly_upgrades.set('starlove', 272);
-		this.heavenly_upgrades.set('startrade', 273);
-		this.heavenly_upgrades.set('keepsakes', 537);
-
-		/* cookie flavor */
-		this.heavenly_upgrades.set('heavenly cookies', 395);
-		this.heavenly_upgrades.set('tea biscuits', 253);
-		this.heavenly_upgrades.set('macarons', 254);
-		this.heavenly_upgrades.set('brand biscuits', 255);
-		this.heavenly_upgrades.set('butter cookies', 326);
-		this.heavenly_upgrades.set('wrinkly cookies', 396);
-		this.heavenly_upgrades.set('crystal cookies', 539);
-		this.heavenly_upgrades.set('maybe cookies', 540);
-		this.heavenly_upgrades.set('not cookies', 541);
-		this.heavenly_upgrades.set('pastries', 542);
-
-		/* other production */
-		this.heavenly_upgrades.set('starter kit', 288);
-		this.heavenly_upgrades.set('starter kitchen', 289);
-		this.heavenly_upgrades.set('bait', 292);
-		this.heavenly_upgrades.set('corruption', 293);
-		this.heavenly_upgrades.set('elder spice', 364);
-		this.heavenly_upgrades.set('wrinkler eye', 495);
-		this.heavenly_upgrades.set('halo gloves', 290);
-		this.heavenly_upgrades.set('aura gloves', 719);
-		this.heavenly_upgrades.set('luminous gloves', 720);
-		this.heavenly_upgrades.set('five-finger discount', 368);
-
-		/* sugar lump */
-		this.heavenly_upgrades.set('caelestis', 408);
-		this.heavenly_upgrades.set('sugar baking', 449);
-		this.heavenly_upgrades.set('daemonicus', 409);
-		this.heavenly_upgrades.set('sugar craving', 450);
-		this.heavenly_upgrades.set('aging process', 451);
-		this.heavenly_upgrades.set('inutilis', 410);
-
-		/* other */
-		this.heavenly_upgrades.set('legacy', 363);
-		this.heavenly_upgrades.set('htbyd', 323);
-		this.heavenly_upgrades.set('classic dairy', 328);
-		this.heavenly_upgrades.set('basic wallpaper', 362);
-		this.heavenly_upgrades.set('heralds', 520);
-		this.heavenly_upgrades.set('wrapping paper', 819);
-		this.heavenly_upgrades.set('fanciful dairy', 329);
-		this.heavenly_upgrades.set('distinguished wallpaper', 804);
-		this.heavenly_upgrades.set('sound test', 805);
-		this.heavenly_upgrades.set('pet', 647);
-
-		Object.freeze(this.heavenly_upgrades); 
 
 	
 	}
